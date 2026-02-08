@@ -1,0 +1,92 @@
+{% comment %}
+  Countdown Timer Block - Shopify Theme App Extension
+  
+  This block can be added to product pages via the theme customizer.
+  It renders a container that the JavaScript widget will populate
+  with the countdown timer.
+{% endcomment %}
+
+{% liquid
+  assign app_url = 'https://your-app-url.com'
+  
+  # Get product information
+  assign current_product_id = product.id | prepend: 'gid://shopify/Product/'
+  
+  # Get collection IDs for the product
+  assign collection_ids = ''
+  for collection in product.collections
+    assign collection_gid = collection.id | prepend: 'gid://shopify/Collection/'
+    if collection_ids == ''
+      assign collection_ids = collection_gid
+    else
+      assign collection_ids = collection_ids | append: ',' | append: collection_gid
+    endif
+  endfor
+%}
+
+{% if block.settings.enabled %}
+  <div 
+    id="countdown-timer-{{ block.id }}"
+    class="countdown-timer-wrapper"
+    data-countdown-timer
+    data-shop="{{ shop.permanent_domain }}"
+    data-product-id="{{ current_product_id }}"
+    data-collection-ids="{{ collection_ids }}"
+    data-api-url="{{ app_url }}"
+    data-position="{{ block.settings.position }}"
+    style="
+      {% if block.settings.position == 'top' %}
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      {% endif %}
+    "
+  >
+    <!-- Timer will be injected here by JavaScript -->
+  </div>
+
+  {% comment %} Load the widget script {% endcomment %}
+  <script src="{{ 'timer-widget.js' | asset_url }}" defer></script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Countdown Timer",
+  "target": "section",
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enabled",
+      "label": "Enable countdown timer",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "position",
+      "label": "Position",
+      "options": [
+        {
+          "value": "top",
+          "label": "Top of page (sticky)"
+        },
+        {
+          "value": "above-cart",
+          "label": "Above Add to Cart button"
+        },
+        {
+          "value": "below-cart",
+          "label": "Below Add to Cart button"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom of product info"
+        }
+      ],
+      "default": "above-cart"
+    }
+  ]
+}
+{% endschema %}

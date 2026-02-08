@@ -1,0 +1,66 @@
+{
+  "name": "countdown-timer",
+  "version": "1.0.0",
+  "description": "Shopify Countdown Timer App - Create urgency with customizable countdown timers",
+  "main": "app/server.js",
+  "scripts": {
+    "dev": "node app/server.js",
+    "start": "NODE_ENV=production node app/server.js",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
+    "build:widget": "rollup -c rollup.config.js",
+    "build": "npm run build:widget",
+    "lint": "eslint app/ --ext .js,.jsx",
+    "postinstall": "npm run build:widget || true"
+  },
+  "keywords": [
+    "shopify",
+    "countdown",
+    "timer",
+    "ecommerce",
+    "urgency",
+    "scarcity"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@remix-run/node": "*",
+    "@remix-run/react": "*",
+    "@remix-run/serve": "*",
+    "@shopify/app-bridge-react": "*",
+    "@shopify/polaris": "*",
+    "@shopify/shopify-api": "*",
+    "@tanstack/react-query": "*",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "helmet": "^7.1.0",
+    "isbot": "*",
+    "mongoose": "^8.0.3",
+    "react": "*",
+    "react-dom": "*"
+  },
+  "devDependencies": {
+    "@remix-run/dev": "*",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "jest": "^29.7.0",
+    "rollup": "^4.9.1",
+    "vite": "*"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coverageDirectory": "coverage",
+    "collectCoverageFrom": [
+      "app/**/*.js",
+      "!app/**/*.test.js"
+    ],
+    "testMatch": [
+      "**/__tests__/**/*.test.js"
+    ]
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
