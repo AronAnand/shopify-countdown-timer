@@ -396,12 +396,22 @@ app.get('/', (req, res) => {
             document.getElementById('timer-text').value = e.target.value;
         });
         
+        // Format date to local datetime-local format
+        function formatLocalDateTime(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+        }
+        
         // Set default dates
         function setDefaultDates() {
             const now = new Date();
             const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
-            document.getElementById('timer-start').value = now.toISOString().slice(0, 16);
-            document.getElementById('timer-end').value = tomorrow.toISOString().slice(0, 16);
+            document.getElementById('timer-start').value = formatLocalDateTime(now);
+            document.getElementById('timer-end').value = formatLocalDateTime(tomorrow);
         }
         setDefaultDates();
         
@@ -449,8 +459,14 @@ app.get('/', (req, res) => {
                 document.getElementById('timer-type').value = timer.type || 'fixed';
                 
                 if (timer.type === 'fixed') {
-                    if (timer.startDate) document.getElementById('timer-start').value = new Date(timer.startDate).toISOString().slice(0, 16);
-                    if (timer.endDate) document.getElementById('timer-end').value = new Date(timer.endDate).toISOString().slice(0, 16);
+                    if (timer.startDate) {
+                        const start = new Date(timer.startDate);
+                        document.getElementById('timer-start').value = formatLocalDateTime(start);
+                    }
+                    if (timer.endDate) {
+                        const end = new Date(timer.endDate);
+                        document.getElementById('timer-end').value = formatLocalDateTime(end);
+                    }
                 } else {
                     document.getElementById('timer-duration').value = timer.durationMinutes || 60;
                 }

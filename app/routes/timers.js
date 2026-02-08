@@ -326,14 +326,19 @@ router.put('/:id', async (req, res) => {
         const timerType = data.type || existingTimer.type;
         const validationData = { ...data, type: timerType };
 
-        // Validate input
-        const errors = validateTimerInput(validationData, true);
-        if (errors.length > 0) {
-            return res.status(400).json({
-                success: false,
-                error: 'Validation failed',
-                errors
-            });
+        // Skip validation for simple toggle operations (only isActive changed)
+        const isSimpleToggle = Object.keys(data).length === 1 && 'isActive' in data;
+
+        // Validate input (skip for simple toggle)
+        if (!isSimpleToggle) {
+            const errors = validateTimerInput(validationData, true);
+            if (errors.length > 0) {
+                return res.status(400).json({
+                    success: false,
+                    error: 'Validation failed',
+                    errors
+                });
+            }
         }
 
         // Update timer
